@@ -1,83 +1,70 @@
-import java.util.Scanner;
+package string.class_problems;
 
+/**
+ * Problem 5: Bank Transaction Reference Generator & Validator
+ * Scenario: A fintech onboarding module for a placement-prep hackathon
+ * needs to both normalize and validate transaction reference codes.
+ * A valid reference is exactly 14 characters: 3 letters (bank code)
+ * + 6 digits (date, ddMMyy) + 5 digits (sequence number).
+ */
 public class BankTransactionReference {
 
-    static String normalizeReference(String raw) {
+    String normalizeReference(String raw) {
+        String trimmed = raw.trim();
 
-        // Remove leading and trailing spaces
-        String reference = raw.trim();
-
-        // Convert first 3 characters to uppercase
-        if (reference.length() >= 3) {
-            String bankCode = reference.substring(0, 3).toUpperCase();
-            String remaining = reference.substring(3);
-
-            reference = bankCode + remaining;
+        if (trimmed.length() < 3) {
+            return trimmed; // too short, let validation catch it
         }
 
-        return reference;
+        String bankCode = trimmed.substring(0, 3).toUpperCase();
+        String rest = trimmed.substring(3);
+
+        return bankCode + rest;
     }
 
-    static String validateAndFormat(String reference) {
-
-        // Check length
+    String validateAndFormat(String reference) {
         if (reference.length() != 14) {
-            return "Invalid: wrong length";
+            return "Invalid: reference must be exactly 14 characters";
         }
 
-        // Check first 3 characters are letters
-        for (int i = 0; i < 3; i++) {
-            if (!Character.isLetter(reference.charAt(i))) {
+        String bankCode = reference.substring(0, 3);
+        String datePart = reference.substring(3, 9);
+        String seqPart = reference.substring(9, 14);
+
+        for (int i = 0; i < bankCode.length(); i++) {
+            if (!Character.isLetter(bankCode.charAt(i))) {
                 return "Invalid: bank code must be 3 letters";
             }
         }
 
-        // Check remaining 11 characters are digits
-        for (int i = 3; i < 14; i++) {
-            if (!Character.isDigit(reference.charAt(i))) {
-                return "Invalid: body must contain digits";
+        String body = datePart + seqPart;
+        for (int i = 0; i < body.length(); i++) {
+            if (!Character.isDigit(body.charAt(i))) {
+                return "Invalid: date and sequence must be numeric";
             }
         }
 
-        // Extract parts
-        String bankCode = reference.substring(0, 3);
-        String date = reference.substring(3, 9);
-        String sequence = reference.substring(9, 14);
+        String dd = datePart.substring(0, 2);
+        String mm = datePart.substring(2, 4);
+        String yy = datePart.substring(4, 6);
 
-        // Format date: ddMMyy -> dd/MM/yy
-        String formattedDate =
-                date.substring(0, 2) + "/" +
-                date.substring(2, 4) + "/" +
-                date.substring(4, 6);
-
-        // Build final output
         StringBuilder result = new StringBuilder();
-
-        result.append("[");
-        result.append(bankCode);
-        result.append("] DATE: ");
-        result.append(formattedDate);
-        result.append(" | SEQ: ");
-        result.append(sequence);
+        result.append("[").append(bankCode).append("] ")
+              .append("DATE: ").append(dd).append("/").append(mm).append("/").append(yy)
+              .append(" | SEQ: ").append(seqPart);
 
         return result.toString();
     }
 
     public static void main(String[] args) {
+        BankTransactionReference ref = new BankTransactionReference();
 
-        Scanner sc = new Scanner(System.in);
+        String normalized1 = ref.normalizeReference(" hdf03022600042 ");
+        System.out.println(ref.validateAndFormat(normalized1));
+        // [HDF] DATE: 03/02/26 | SEQ: 00042
 
-        System.out.print("Enter transaction reference: ");
-        String raw = sc.nextLine();
-
-        // Step 1: Normalize
-        String normalized = normalizeReference(raw);
-
-        // Step 2: Validate and format
-        String result = validateAndFormat(normalized);
-
-        System.out.println(result);
-
-        sc.close();
+        String normalized2 = ref.normalizeReference("12F03022600042");
+        System.out.println(ref.validateAndFormat(normalized2));
+        // Invalid: bank code must be 3 letters
     }
 }

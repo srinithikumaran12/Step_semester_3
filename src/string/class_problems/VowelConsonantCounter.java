@@ -1,37 +1,35 @@
-import java.util.Scanner;
+package string.class_problems;
 
+/**
+ * Problem 1: Vowel & Consonant Counter
+ * Scenario: A library orientation kiosk counts vowels and consonants
+ * in a submitted book title for a simple text-stats display.
+ */
 public class VowelConsonantCounter {
 
-    static void countVowelsAndConsonants(String text) {
+    void countVowelsAndConsonants(String text) {
         int vowels = 0;
         int consonants = 0;
 
         for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
+            char ch = Character.toLowerCase(text.charAt(i));
 
-            if (ch == 'a' || ch == 'e' || ch == 'i' ||
-                ch == 'o' || ch == 'u' ||
-                ch == 'A' || ch == 'E' || ch == 'I' ||
-                ch == 'O' || ch == 'U') {
+            if (ch == ' ') {
+                continue; // ignore spaces
+            }
 
+            if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
                 vowels++;
-            } else if (ch != ' ') {
+            } else if (ch >= 'a' && ch <= 'z') {
                 consonants++;
             }
         }
 
-        System.out.println("Vowels: " + vowels +
-                           " | Consonants: " + consonants);
+        System.out.println("Vowels: " + vowels + " | Consonants: " + consonants);
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Enter a string: ");
-        String text = sc.nextLine();
-
-        countVowelsAndConsonants(text);
-
-        sc.close();
+        VowelConsonantCounter counter = new VowelConsonantCounter();
+        counter.countVowelsAndConsonants("Java Programming"); // Vowels: 5 | Consonants: 10
     }
 }

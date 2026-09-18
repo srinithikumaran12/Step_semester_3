@@ -1,21 +1,25 @@
-import java.util.Scanner;
+package string.class_problems;
 
+/**
+ * Problem 3: File Extension Validator
+ * Scenario: An assignment-upload portal must check whether an uploaded
+ * filename has an accepted extension (pdf, docx, zip) regardless of case,
+ * before accepting the submission.
+ */
 public class FileExtensionValidator {
 
-    static String validateFileExtension(String filename) {
-
+    String validateFileExtension(String filename) {
         int dotIndex = filename.lastIndexOf('.');
 
-        if (dotIndex == -1) {
+        if (dotIndex == -1 || dotIndex == filename.length() - 1) {
             return "Rejected — invalid file type";
         }
 
         String extension = filename.substring(dotIndex + 1);
 
-        if (extension.equalsIgnoreCase("pdf") ||
-            extension.equalsIgnoreCase("docx") ||
-            extension.equalsIgnoreCase("zip")) {
-
+        if (extension.equalsIgnoreCase("pdf")
+                || extension.equalsIgnoreCase("docx")
+                || extension.equalsIgnoreCase("zip")) {
             return "Accepted";
         }
 
@@ -23,13 +27,8 @@ public class FileExtensionValidator {
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        System.out.print("Enter filename: ");
-        String filename = sc.nextLine();
-
-        System.out.println(validateFileExtension(filename));
-
-        sc.close();
+        FileExtensionValidator validator = new FileExtensionValidator();
+        System.out.println(validator.validateFileExtension("Assignment1.PDF")); // Accepted
+        System.out.println(validator.validateFileExtension("notes.txt")); // Rejected — invalid file type
     }
 }
